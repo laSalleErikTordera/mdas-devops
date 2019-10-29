@@ -42,7 +42,7 @@ pkill votingapp
 echo "Winner is: "$winner
 expectedWinner="dev"
 
-if ["$expectedWinner" == "$winner"]; then
+if [ "$expectedWinner"=="$winner" ]; then
     echo "TEST_PASSED"
     exit 0
 else
