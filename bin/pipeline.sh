@@ -2,6 +2,9 @@
 
 # CI/CD Pipeline for the project votingapp
 
+# Clean-Up
+rm -rf build
+
 # Dependencies Install
 go get github.com/gorilla/websocket
 go get github.com/labstack/echo
