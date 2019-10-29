@@ -24,17 +24,17 @@ pushd build/votingapp/
 popd
 
 # Testing
-curl -url "localhost:8080/vote" \
+curl --url "localhost:8080/vote" \
     --request POST \
-    --data '{"topics":["dev", "ops"]}'
+    --data '{"topics":["dev", "ops"]}' \
+    --header "Content-type: application/json"
 
-curl -url "localhost:8080/vote" \
+curl --url "localhost:8080/vote" \
     --request PUT \
-    --data '{"topic": "dev"}' 
+    --data '{"topic": "dev"}'  \
+    --header "Content-type: application/json"
 
-winner=$(curl --url "localhost:8080/vote" \ 
-    --request DELETE \
-    --header "Content-type: application/json" | jq -r '.winner')
+winner=$(curl --url "localhost:8080/vote" --request DELETE --header "Content-type: application/json" | jq -r '.winner')
 
 
 pkill votingapp
