@@ -1,51 +1,77 @@
 #!/bin/bash
 
+#Set error hanbdling to stop if any order fails
 set -e
 # CI/CD Pipeline for the project votingapp
 
-# Clean-Up
-rm -rf build
+#Clean Up
+cleanUp(){
+    pkill votingapp || true
+    rm -rf build || true
+}
 
-# Dependencies Install
-go get github.com/gorilla/websocket
-go get github.com/labstack/echo
+deps(){
+    go get "github.com/gorilla/websocket"
+	go get "github.com/labstack/echo"
+}
 
-mkdir build
-mkdir build/votingapp
+build()
+{
+    mkdir build
+    mkdir build/votingapp
 
-# Go Build
-go build -o ./build/votingapp/votingapp ./src/votingapp
+    go build -o build/votingapp/votingapp ./src/votingapp
+    cp -r src/votingapp/ui build/votingapp
 
-# Copy static files
-cp -r src/votingapp/ui build/votingapp
+    pushd build/votingapp
+    ./votingapp &
+    popd
+}
 
-pushd build/votingapp/
-./votingapp &
-popd
+retry(){
+    n=0
+    interval=5
+    retries=3
+    $@ && return 0
+    until [ $n -ge $retries ]
+    do
+        n=$[$n+1]
+        echo "Retrying...$n of $retries, wait for $interval seconds"
+        sleep $interval
+        $@ && return 0
+    done
 
-# Testing
-curl --url "localhost:8080/vote" \
-    --request POST \
+    return 1
+}
+
+test()
+{
+    votingurl="localhost:8080/vote"
+
+    curl --url $votingurl \
+    --request  POST \
     --data '{"topics":["dev", "ops"]}' \
     --header "Content-type: application/json"
 
-curl --url "localhost:8080/vote" \
-    --request PUT \
-    --data '{"topic": "dev"}'  \
+    curl --url $votingurl \
+    --data '{"topic": "dev"}' \
     --header "Content-type: application/json"
 
-winner=$(curl --url "localhost:8080/vote" --request DELETE --header "Content-type: application/json" | jq -r '.winner')
+    winner=$(curl --url $votingurl --request DELETE --header "Content-type: application/json" | jq -r '.winner')
 
+    echo "Winner is: "$winner
+    expectedWinner="dev"
 
-pkill votingapp
+    if [ "$expectedWinner" == "$winner" ]; then
+        echo "TEST_PASSED"
+        return 0
+    else
+        echo "TEST_FAILED"
+        return 1
+    fi
+}
 
-echo "Winner is: "$winner
-expectedWinner="dev"
-
-if [ "$expectedWinner"=="$winner" ]; then
-    echo "TEST_PASSED"
-    exit 0
-else
-    echo "TEST FAILED"
-    exit 1
-fi
+cleanUp
+deps
+build
+retry test
