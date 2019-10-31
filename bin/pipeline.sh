@@ -71,7 +71,7 @@ test()
     fi
 }
 
-cleanUp
 deps
+cleanUp
 build
 retry test
