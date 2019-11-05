@@ -1,0 +1,9 @@
+FROM golang:1.13.4-buster
+
+COPY . .
+
+RUN go get github.com/gorilla/websocket && \
+    go get github.com/labstack/echo
+
+RUN go build -o build/votingapp/votingapp ./src/votingapp && \
+    cp -r ./src/votingapp/ui ./build
