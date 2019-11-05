@@ -18,7 +18,7 @@ retry(){
 
 test()
 {
-    votingurl="localhost:8080/vote"
+    votingurl="${VOTINGAPP_HOST}/vote"
 
     curl --url $votingurl \
     --request  POST \
