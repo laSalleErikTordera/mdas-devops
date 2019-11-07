@@ -16,4 +16,4 @@ FROM ubuntu:18.04
 WORKDIR /app
 COPY  --from=builder /build .
 
-#ENTRYPOINT [ "./votingapp" ]
+ENTRYPOINT [ "./votingapp" ]

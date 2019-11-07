@@ -9,8 +9,6 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./src/votingapp
-    ports:
-      - 8080:80
     environment:
       REDIS: "myredis:6379"
   
@@ -20,5 +18,12 @@ services:
       context:
         ./votingapp-test
     environment: 
-      VOTINGAPP_HOST: "myvotingapp"
+      VOTINGAPP_HOST: "myproxy"
+    
+  myproxy: 
+    image: proxy
+    build:
+      context: ./nginx
+    ports:
+      - 8080:80
   
