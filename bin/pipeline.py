@@ -25,7 +25,7 @@ def test():
 
     r = requests.put(
         url=URL,
-        data={'topic':'ops'},
+        json={'topic':'dev'},
         headers={'Accept': 'Content-type: application/json'}
     )
 
@@ -33,10 +33,10 @@ def test():
         url=URL,
         headers={'Accept': 'Content-type: application/json'}
     )
-
+    
     print("Finished testing....")
 
-    if r.json()['winner'] is expectedWinner:
+    if r.json()['winner'] == expectedWinner:
         return True
 
     raise(Exception("Got not a valid winner"))
