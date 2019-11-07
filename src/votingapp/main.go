@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo"
@@ -14,8 +15,7 @@ var (
 )
 
 func main() {
-	//time.Sleep(5 * time.Second)
-
+	time.Sleep(5 * time.Second)
 	e.Static("/", "ui")
 
 	api := "/vote"
@@ -25,7 +25,7 @@ func main() {
 	e.DELETE(api, log(finishVoting))
 	e.GET("/ws", log(serveWs))
 
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(":80"))
 }
 
 func sendMessage(value interface{}) error {
