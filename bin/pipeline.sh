@@ -54,6 +54,7 @@ test()
     --header "Content-type: application/json"
 
     curl --url $votingurl \
+    --request PUT \
     --data '{"topic": "dev"}' \
     --header "Content-type: application/json"
 
@@ -74,4 +75,5 @@ test()
 deps
 cleanUp
 build
-retry test
+#retry test
+python3 ./bin/pipeline.py
