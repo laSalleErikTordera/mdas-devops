@@ -8,7 +8,7 @@ RUN go get github.com/gorilla/websocket && \
 COPY . .
 
 RUN go build -o /build/votingapp && \
-    cp -r ui ./build
+    cp -r ui /build
 
 ######## RUNTIME #########
 FROM ubuntu:18.04
@@ -16,4 +16,4 @@ FROM ubuntu:18.04
 WORKDIR /app
 COPY  --from=builder /build .
 
-ENTRYPOINT [ "./votingapp" ]
+#ENTRYPOINT [ "./votingapp" ]
