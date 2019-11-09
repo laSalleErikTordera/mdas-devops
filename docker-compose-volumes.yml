@@ -22,11 +22,10 @@ services:
     
   myproxy: 
     image: proxy
-    dockerfile: Dockerfile.volume
     build:
+      dockerfile: Dockerfile.volume
       context: ./nginx
     ports:
       - 8080:80
     volumes:
-      - .:/etc/nginx
-  
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
