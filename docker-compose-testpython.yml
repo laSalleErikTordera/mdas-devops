@@ -1,0 +1,31 @@
+version: "3.0"
+
+services:
+  myredis:
+    image: redis
+
+  myvotingapp: 
+    image: votingapp
+    build:
+      dockerfile: Dockerfile
+      context: ./src/votingapp
+    environment:
+      REDIS: "myredis:6379"
+
+  myproxy: 
+    image: proxy
+    build:
+      context: ./nginx
+    ports:
+      - 8080:80
+
+  mytest:  
+    image: votingapp-test
+    build:
+      dockerfile: Dockerfile.python
+      context:
+        ./votingapp-test
+    environment: 
+      VOTINGAPP_HOST: "myproxy"
+    
+  

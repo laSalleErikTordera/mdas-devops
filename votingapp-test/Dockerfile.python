@@ -1,0 +1,10 @@
+#Desde imagen base
+FROM python:3.8.0-buster
+
+RUN pip install retry requests
+RUN export VOTINGAPP_HOST
+
+COPY test.py .
+
+#Existen los entry-point que definen que proceso va ejecutar la imagen
+CMD [ "python", "test.py" ]

@@ -1,0 +1,10 @@
+#Desde imagen base
+FROM ubuntu:18.04
+
+RUN apt-get update && apt-get install -y nodejs npm && rm -rf /var/lib/apt/lists/*
+RUN npm install xmlhttprequest
+
+COPY test.js .
+
+#Existen los entry-point que definen que proceso va ejecutar la imagen
+CMD [ "node", "./test.js" ]

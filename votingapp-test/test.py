@@ -1,9 +1,12 @@
 from retry import retry
 import requests
 import json 
+import os
 
-URL = "http://localhost:8080/vote"
-
+try:
+    URL = "http://" + os.environ['VOTINGAPP_HOST'] + "/vote"
+except:
+    URL = "http://localhost" + "/vote"
 
 def setUp():
 
@@ -18,21 +21,24 @@ def test():
     print("Starting testing....")
 
     r = requests.post(
-        url=URL,
+        url= URL + "/vote",
         data={'topics': ['dev', 'ops']},
         headers={'Accept': 'Content-type: application/json'}
     )
+    print(r.json())
 
     r = requests.put(
         url=URL,
         json={'topic':'dev'},
         headers={'Accept': 'Content-type: application/json'}
     )
+    print(r.json())
 
     r = requests.delete(
         url=URL,
         headers={'Accept': 'Content-type: application/json'}
     )
+    print(r.json())
     
     print("Finished testing....")
 
