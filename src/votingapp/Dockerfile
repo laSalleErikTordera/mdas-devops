@@ -1,5 +1,7 @@
 ######### BUILDER #########
-FROM golang as builder
+FROM golang:1.13-alpine3.10 as builder
+
+RUN apk add --no-cache git
 
 RUN go get github.com/gorilla/websocket && \
     go get github.com/labstack/echo && \
@@ -11,7 +13,7 @@ RUN go build -o /build/votingapp && \
     cp -r ui /build
 
 ######## RUNTIME #########
-FROM ubuntu:18.04
+FROM alpine:3.10
 
 WORKDIR /app
 COPY  --from=builder /build .
