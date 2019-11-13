@@ -5,7 +5,7 @@ services:
     image: redis
 
   myvotingapp: 
-    image: votingapp
+    image: lasalleeriktordera/votingapp
     build:
       dockerfile: Dockerfile
       context: ./src/votingapp
@@ -13,7 +13,7 @@ services:
       REDIS: "myredis:6379"
   
   mytest:  
-    image: votingapp-test
+    image: lasalleeriktordera/votingapp-test
     build:
       context:
         ./votingapp-test
@@ -21,7 +21,7 @@ services:
       VOTINGAPP_HOST: "myproxy"
     
   myproxy: 
-    image: proxy
+    image: lasalleeriktordera/proxy
     build:
       context: ./nginx
     ports:

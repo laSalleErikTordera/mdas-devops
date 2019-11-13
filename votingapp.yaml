@@ -14,7 +14,7 @@ metadata:
   namespace: votingapp
 spec:
   containers:
-  - image: paulopez/votingapp
+  - image: lasalleeriktordera/votingapp
     name: votingapp    
     env: 
       - name: REDIS
@@ -64,3 +64,30 @@ spec:
   selector:
     app: myredis
   type: NodePort
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: myvotingapp
+  name: myvotingapp
+  namespace: votingapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myvotingapp
+  template:
+    metadata:
+      labels:
+        app: myvotingapp
+    spec:
+      containers:
+      - name: myvotingapp
+        image: lasalleeriktordera/votingapp
+        env: 
+        - name: VOTINGAPP_HOST
+          value:  "myvotingapp"
+
