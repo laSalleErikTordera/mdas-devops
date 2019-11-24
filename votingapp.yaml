@@ -43,12 +43,10 @@ metadata:
   namespace: votingapp
 spec:
   ports:
-  - nodePort: 32486
-    port: 80
+  - port: 80
     targetPort: 80
   selector:
     app: myvotingapp
-  type: NodePort
 
 ---
 
@@ -63,7 +61,6 @@ spec:
     targetPort: 6379
   selector:
     app: myredis
-  type: NodePort
 
 ---
 
@@ -91,3 +88,25 @@ spec:
         - name: VOTINGAPP_HOST
           value:  "myvotingapp"
 
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: myredis
+  name: myredis
+  namespace: votingapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myredis
+  template:
+    metadata:
+      labels:
+        app: myredis
+    spec:
+      containers:
+      - name: myredis
+        image: redis
