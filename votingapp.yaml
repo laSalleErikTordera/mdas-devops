@@ -110,3 +110,81 @@ spec:
       containers:
       - name: myredis
         image: redis
+---
+
+apiVersion: v1
+data:
+  nginx.conf: |-
+    events { worker_connections 1024; }
+
+    http {
+        include /etc/nginx/mime.types;
+
+        upstream voting{
+            server myvotingapp;
+        }
+
+        server {
+            listen 80;
+
+            location / {
+                proxy_pass         http://voting/;
+                proxy_redirect     off;
+                proxy_set_header   Host $host;
+                proxy_set_header   X-Real-IP $remote_addr;
+                proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header   X-Forwarded-Host $server_name;
+            }
+
+            location /ws {
+                proxy_pass http://voting/ws;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "Upgrade";
+            }
+        }
+
+    }
+kind: ConfigMap
+metadata:
+  name: mynginxconfig
+  namespace: votingapp
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mynginx
+  name: mynginx
+  namespace: votingapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mynginx
+  template:
+    metadata:
+      labels:
+        app: mynginx
+    spec:
+      containers:
+      - name: mynginx
+        image: nginx
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mynginx
+  namespace: votingapp
+spec:
+  ports:
+  - nodePort: 32488
+    port: 80
+    targetPort: 80
+  selector:
+    app: mynginx
+  type: NodePort
